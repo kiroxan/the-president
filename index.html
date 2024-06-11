@@ -1,0 +1,123 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Meilleur Candidat pour Vous</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 20px;
+        }
+        .slider-container {
+            margin: 20px 0;
+        }
+        .slider {
+            width: 100%;
+        }
+        #result {
+            margin-top: 20px;
+            font-size: 1.5em;
+            font-weight: bold;
+        }
+    </style>
+</head>
+<body>
+    <h1>Choisissez l'importance de chaque thème</h1>
+    <div class="slider-container">
+        <label for="economy">Économie et Pouvoir d'Achat (<span id="economyValue">30</span>%)</label>
+        <input type="range" id="economy" class="slider" min="0" max="100" value="30" oninput="updateValues('economy')">
+    </div>
+    <div class="slider-container">
+        <label for="health">Santé (<span id="healthValue">20</span>%)</label>
+        <input type="range" id="health" class="slider" min="0" max="100" value="20" oninput="updateValues('health')">
+    </div>
+    <div class="slider-container">
+        <label for="education">Éducation (<span id="educationValue">15</span>%)</label>
+        <input type="range" id="education" class="slider" min="0" max="100" value="15" oninput="updateValues('education')">
+    </div>
+    <div class="slider-container">
+        <label for="security">Sécurité et Immigration (<span id="securityValue">15</span>%)</label>
+        <input type="range" id="security" class="slider" min="0" max="100" value="15" oninput="updateValues('security')">
+    </div>
+    <div class="slider-container">
+        <label for="environment">Environnement (<span id="environmentValue">10</span>%)</label>
+        <input type="range" id="environment" class="slider" min="0" max="100" value="10" oninput="updateValues('environment')">
+    </div>
+    <div class="slider-container">
+        <label for="democracy">Démocratie et Gouvernance (<span id="democracyValue">10</span>%)</label>
+        <input type="range" id="democracy" class="slider" min="0" max="100" value="10" oninput="updateValues('democracy')">
+    </div>
+    <div id="result">Le meilleur candidat pour vous est : <span id="bestCandidate">Calcul en cours...</span></div>
+
+    <script>
+        const candidates = {
+            "Jean-Luc Mélenchon": [9, 8, 8, 5, 9, 9],
+            "Fabien Roussel": [8, 8, 7, 5, 7, 6],
+            "Anne Hidalgo": [7, 7, 8, 6, 8, 7],
+            "Emmanuel Macron": [8, 7, 7, 6, 7, 5],
+            "Nathalie Arthaud": [8, 8, 6, 4, 7, 7],
+            "Yannick Jadot": [6, 7, 7, 5, 10, 8],
+            "Philippe Poutou": [7, 8, 6, 4, 7, 7],
+            "Marine Le Pen": [7, 6, 5, 9, 4, 6],
+            "Jean Lassalle": [6, 7, 6, 6, 6, 7],
+            "Nicolas Dupont-Aignan": [6, 6, 5, 9, 4, 6]
+        };
+
+        const sliders = ["economy", "health", "education", "security", "environment", "democracy"];
+        const values = {
+            "economy": 30,
+            "health": 20,
+            "education": 15,
+            "security": 15,
+            "environment": 10,
+            "democracy": 10
+        };
+
+        function updateValues(changedSlider) {
+            const total = Object.values(values).reduce((a, b) => a + b);
+            if (total !== 100) {
+                const diff = 100 - total;
+                const slidersToAdjust = sliders.filter(slider => slider !== changedSlider && values[slider] > 0);
+                const adjustment = diff / slidersToAdjust.length;
+                slidersToAdjust.forEach(slider => {
+                    values[slider] += adjustment;
+                    if (values[slider] < 0) values[slider] = 0;
+                    if (values[slider] > 100) values[slider] = 100;
+                    document.getElementById(slider).value = values[slider];
+                    document.getElementById(slider + "Value").innerText = values[slider].toFixed(2);
+                });
+            }
+            values[changedSlider] = parseFloat(document.getElementById(changedSlider).value);
+            document.getElementById(changedSlider + "Value").innerText = values[changedSlider].toFixed(2);
+            calculateBestCandidate();
+        }
+
+        function calculateBestCandidate() {
+            const totalWeight = Object.values(values).reduce((a, b) => a + b, 0);
+            let bestCandidate = "";
+            let bestScore = 0;
+
+            for (const candidate in candidates) {
+                const scores = candidates[candidate];
+                const candidateScore = 
+                    (scores[0] * values["economy"] + 
+                     scores[1] * values["health"] + 
+                     scores[2] * values["education"] + 
+                     scores[3] * values["security"] + 
+                     scores[4] * values["environment"] + 
+                     scores[5] * values["democracy"]) / totalWeight;
+
+                if (candidateScore > bestScore) {
+                    bestScore = candidateScore;
+                    bestCandidate = candidate;
+                }
+            }
+
+            document.getElementById('bestCandidate').innerText = bestCandidate;
+        }
+
+        updateValues('economy');
+    </script>
+</body>
+</html>
