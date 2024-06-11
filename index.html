@@ -20,6 +20,10 @@
             font-size: 1.5em;
             font-weight: bold;
         }
+        #calculation-link {
+            margin-top: 20px;
+            font-size: 1.2em;
+        }
     </style>
 </head>
 <body>
@@ -49,6 +53,12 @@
         <input type="range" id="democracy" class="slider" min="0" max="100" value="10" oninput="updateValues('democracy')">
     </div>
     <div id="result">Le meilleur candidat pour vous est : <span id="bestCandidate">Calcul en cours...</span></div>
+
+    <div id="calculation-link">
+        <a href="https://docs.google.com/document/d/1USNuvBMnHsckaPZQmXprbmLj_Venid4MUuptGj91tLA/edit?usp=sharing" target="_blank">
+            Comprendre le calcul
+        </a>
+    </div>
 
     <script>
         const candidates = {
