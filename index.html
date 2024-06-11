@@ -19,10 +19,12 @@
             margin-top: 20px;
             font-size: 1.5em;
             font-weight: bold;
+            display: none;
         }
         #topCandidates {
             margin-top: 20px;
             font-size: 1.2em;
+            display: none;
         }
         .candidate {
             margin-top: 10px;
@@ -93,7 +95,10 @@
             "democracy": 10
         };
 
+        let hasInteracted = false;
+
         function updateValues(changedSlider) {
+            hasInteracted = true;
             const total = Object.values(values).reduce((a, b) => a + b);
             if (total !== 100) {
                 const diff = 100 - total;
@@ -131,13 +136,17 @@
 
             candidateScores.sort((a, b) => b.score - a.score);
 
-            document.getElementById('bestCandidate').innerText = candidateScores[0].candidate;
-            showTopCandidates(candidateScores);
+            if (hasInteracted) {
+                document.getElementById('result').style.display = 'block';
+                document.getElementById('bestCandidate').innerText = candidateScores[0].candidate;
+                showTopCandidates(candidateScores);
+            }
         }
 
         function showTopCandidates(candidateScores) {
             const topCandidates = candidateScores.slice(0, 3);
             const topCandidatesContainer = document.getElementById('topCandidates');
+            topCandidatesContainer.style.display = 'block';
             topCandidatesContainer.innerHTML = '<h2>Top 3 Candidats :</h2>';
             topCandidates.forEach((candidate, index) => {
                 let emoji;
@@ -149,9 +158,9 @@
             });
         }
 
-        updateValues('economy');
+        calculateBestCandidate();
     </script>
-		<script type="text/javascript">
+	<script type="text/javascript">
     (function(c,l,a,r,i,t,y){
         c[a]=c[a]||function(){(c[a].q=c[a].q||[]).push(arguments)};
         t=l.createElement(r);t.async=1;t.src="https://www.clarity.ms/tag/"+i;
@@ -159,5 +168,4 @@
     })(window, document, "clarity", "script", "mqdxjczngr");
 </script>
 </body>
-
 </html>
